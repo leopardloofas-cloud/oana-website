@@ -97,6 +97,17 @@
     overlay.classList.remove('exit');
   }, { once: true });
 
+  // Reset overlay when restored from bfcache (browser back/forward button)
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) {
+      overlay.classList.remove('enter');
+      overlay.classList.add('exit');
+      overlay.addEventListener('animationend', () => {
+        overlay.classList.remove('exit');
+      }, { once: true });
+    }
+  });
+
   // Enter animation on link click
   document.querySelectorAll('a[href]').forEach(link => {
     const staticHref = link.getAttribute('href');
