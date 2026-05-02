@@ -40,9 +40,9 @@
       inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(8,18,22,0.35) 0%,
-        rgba(8,18,22,0.08) 40%,
-        rgba(8,18,22,0.6) 100%
+        rgba(8,18,22,0.45) 0%,
+        rgba(8,18,22,0.38) 40%,
+        rgba(8,18,22,0.72) 100%
       );
       z-index: 1;
     }
@@ -75,7 +75,7 @@
       font-weight: 400;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgba(250,250,248,0.65);
+      color: rgba(250,250,248,0.9);
       opacity: 0;
       animation: heroTextIn 1.2s 1.1s var(--ease-out) forwards;
     }
@@ -264,17 +264,19 @@
     /* ---- Discipline Strip ---- */
     .disciplines {
       background: var(--charcoal);
-      padding: 72px 48px;
-      display: flex;
-      align-items: center;
-      gap: 0;
+      padding: 72px 0;
       overflow: hidden;
+    }
+    .disciplines-track {
+      display: flex;
+      will-change: transform;
     }
     .disciplines-inner {
       display: flex;
       gap: 64px;
-      animation: marquee 18s linear infinite;
+      padding-right: 64px;
       white-space: nowrap;
+      flex-shrink: 0;
     }
     .disc-item {
       font-family: var(--font-serif);
@@ -291,7 +293,7 @@
     }
     @keyframes marquee {
       from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
+      to   { transform: translateX(var(--marquee-offset)); }
     }
 
     /* ---- Selected Work Banner ---- */
@@ -351,7 +353,7 @@
       .featured, .intro { padding-left: 24px; padding-right: 24px; }
       .selected-banner { flex-direction: column; gap: 40px; padding: 72px 24px; }
       .selected-banner-img { flex: none; width: 100%; height: 320px; }
-      .disciplines { padding: 48px 24px; }
+      .disciplines { padding: 48px 0; }
     }
     @media (max-width: 600px) {
       .intro { padding: 72px 20px; }
@@ -371,7 +373,7 @@
   <div id="page-transition"></div>
 
   <!-- Navigation -->
-  <nav class="nav light-links light-logo" data-light-on-top="true">
+  <nav class="nav light-links light-logo logo-hidden" data-light-on-top="true" data-hide-logo-on-top="true">
     <a class="nav-logo" href="index.html">
       <img src="uploads/logo-oana.png" alt="Oana Ruxanda">
     </a>
@@ -449,13 +451,13 @@
       </a>
 
       <a href="project-detail.html?id=3" class="feat-item reveal reveal-delay-3">
-        <div class="feat-item-img ph-dark2">
-          <div class="ph-figure" style="background:rgba(255,255,255,0.05); width:60%; height:70%;"></div>
+        <div class="feat-item-img">
+          <img src="idle days/1.jpeg" alt="Idle Days" style="width:100%;height:100%;object-fit:cover;display:block;">
         </div>
         <div class="feat-item-overlay"></div>
         <div class="feat-item-info">
-          <div class="feat-item-title">Soft Focus</div>
-          <div class="feat-item-meta">Editorial · 2023</div>
+          <div class="feat-item-title">Idle Days</div>
+          <div class="feat-item-meta">Documentary · 2024</div>
         </div>
       </a>
 
@@ -464,23 +466,17 @@
 
   <!-- Discipline Strip -->
   <div class="disciplines">
-    <div class="disciplines-inner">
-      <span class="disc-item">Street</span>
-      <span class="disc-item accent">·</span>
-      <span class="disc-item">Fashion</span>
-      <span class="disc-item accent">·</span>
-      <span class="disc-item accent">Editorial</span>
-      <span class="disc-item accent">·</span>
-      <span class="disc-item">Portrait</span>
-      <span class="disc-item accent">·</span>
-      <span class="disc-item">Street</span>
-      <span class="disc-item accent">·</span>
-      <span class="disc-item">Fashion</span>
-      <span class="disc-item accent">·</span>
-      <span class="disc-item accent">Editorial</span>
-      <span class="disc-item accent">·</span>
-      <span class="disc-item">Portrait</span>
-      <span class="disc-item accent">·</span>
+    <div class="disciplines-track">
+      <div class="disciplines-inner">
+        <span class="disc-item">Street</span>
+        <span class="disc-item accent">·</span>
+        <span class="disc-item">Fashion</span>
+        <span class="disc-item accent">·</span>
+        <span class="disc-item accent">Editorial</span>
+        <span class="disc-item accent">·</span>
+        <span class="disc-item">Portrait</span>
+        <span class="disc-item accent">·</span>
+      </div>
     </div>
   </div>
 
@@ -492,8 +488,8 @@
       <p>Open to working with brands, publications, and artists who seek a distinctive visual language. Based in Europe, available worldwide.</p>
       <a href="contact.html" class="btn-primary">Get in Touch</a>
     </div>
-    <div class="selected-banner-img reveal reveal-delay-3 ph-mid2">
-      <div class="ph-figure" style="background:rgba(255,255,255,0.12); width:50%; height:90%;"></div>
+    <div class="selected-banner-img reveal reveal-delay-3">
+      <img src="umbrella diaries/umbrella vertical.jpeg" alt="Umbrella Diaries" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">
     </div>
   </section>
 
@@ -502,7 +498,7 @@
     <div class="footer-logo">
       <img src="uploads/logo-oana.png" alt="Oana Ruxanda">
     </div>
-    <span>© 2024 Oana Ruxanda</span>
+    <span>© 2026 Oana Ruxanda</span>
     <span>All rights reserved</span>
   </footer>
 

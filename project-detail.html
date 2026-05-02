@@ -378,6 +378,69 @@
       .photo-grid-diptych { grid-template-columns: 1fr; padding: 24px 20px 64px; }
     }
 
+    /* ---- Mixed layout (single + diptych rows) ---- */
+    .photo-grid-mixed {
+      max-width: 1920px;
+      margin: 0 auto;
+      padding: 40px 48px 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .photo-grid-mixed .mixed-single-item {
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+      opacity: 0;
+      animation: fadeUp 0.7s var(--ease-out) forwards;
+    }
+    .photo-grid-mixed .mixed-single-item .photo-item-img {
+      position: relative;
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+      transform: none;
+    }
+    .photo-grid-mixed .mixed-single-item .photo-item-img img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.8s var(--ease-out);
+    }
+    .photo-grid-mixed .mixed-single-item:hover .photo-item-img img { transform: scale(1.03); }
+    .photo-grid-mixed .mixed-diptych-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .photo-grid-mixed .mixed-diptych-item {
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+      opacity: 0;
+      aspect-ratio: 4/3;
+      animation: fadeUp 0.7s var(--ease-out) forwards;
+    }
+    .photo-grid-mixed .mixed-diptych-item .photo-item-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: none;
+    }
+    .photo-grid-mixed .mixed-diptych-item .photo-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s var(--ease-out);
+    }
+    .photo-grid-mixed .mixed-diptych-item:hover .photo-item-img img { transform: scale(1.03); }
+    @media (max-width: 700px) {
+      .photo-grid-mixed { padding: 24px 20px 64px; }
+      .photo-grid-mixed .mixed-diptych-row { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 900px) {
       .project-info { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
       .project-hero-content { padding: 40px 24px; }
@@ -601,7 +664,7 @@
     <div class="footer-logo">
       <img src="uploads/logo-oana.png" alt="Oana Ruxanda">
     </div>
-    <span>© 2024 Oana Ruxanda</span>
+    <span>© 2026 Oana Ruxanda</span>
     <span>All rights reserved</span>
   </footer>
 
@@ -610,7 +673,7 @@
     // Project data
     const projects = {
       1: {
-        title: 'Umbrella Diaries', category: 'Street Photography', year: '2024', location: 'Bucharest', count: '10 photographs',
+        title: 'Umbrella Diaries', category: 'Street Photography', year: '2024', location: 'Various', count: '10 photographs',
         nextId: 2, nextTitle: 'Echoes',
         heroImg: 'uploads/umbrella-diaries/cover.jpeg',
         images: [
@@ -626,7 +689,7 @@
           'uploads/umbrella-diaries/10.jpeg',
         ]
       },
-      2: { title: 'Echoes',           category: 'Fashion',             year: '2024', location: 'Paris · Bucharest',   count: '8 photographs',  nextId: 3, nextTitle: 'Soft Focus',
+      2: { title: 'Echoes',           category: 'Photography',         year: '2024', location: 'Iceland · Romania',   count: '8 photographs',  nextId: 3, nextTitle: 'Idle Days',
         layout: 'diptych', heroImg: 'echoes/Oana Ruxanda_echoes_dyptic 3.2.jpg',
         images: [
           'echoes/Oana Ruxanda_echoes_diptych 1.1.jpg',
@@ -639,10 +702,84 @@
           'echoes/Oana Ruxanda_echoes_dyptic 4.2.JPG',
         ]
       },
-      3: { title: 'Soft Focus',      category: 'Editorial',           year: '2023', location: 'Bucharest',           count: '14 photographs', nextId: 4, nextTitle: 'Inner Light',   heroBg: 'pt-4' },
-      4: { title: 'Inner Light',     category: 'Portrait',            year: '2023', location: 'Bucharest · Berlin',  count: '9 photographs',  nextId: 5, nextTitle: 'Transit',       heroBg: 'pt-5' },
-      5: { title: 'Transit',         category: 'Street Photography',  year: '2023', location: 'Vienna · Budapest',   count: '16 photographs', nextId: 6, nextTitle: 'Nocturne',      heroBg: 'pt-3' },
-      6: { title: 'Nocturne',        category: 'Fashion',             year: '2023', location: 'Bucharest',           count: '11 photographs', nextId: 7, nextTitle: 'Pale Season',   heroBg: 'pt-6' },
+      3: {
+        title: 'Idle Days', category: 'Documentary', year: '2024', location: 'Bucharest', count: '15 photographs',
+        nextId: 4, nextTitle: 'untitled',
+        heroImg: 'idle days/1.jpeg',
+        layout: 'mixed',
+        groups: [
+          { type: 'single',  indices: [0] },
+          { type: 'single',  indices: [1] },
+          { type: 'diptych', indices: [2, 3] },
+          { type: 'single',  indices: [4] },
+          { type: 'diptych', indices: [5, 6] },
+          { type: 'single',  indices: [7] },
+          { type: 'single',  indices: [8] },
+          { type: 'diptych', indices: [9, 10] },
+          { type: 'single',  indices: [11] },
+          { type: 'diptych', indices: [12, 13] },
+          { type: 'single',  indices: [14] },
+        ],
+        images: [
+          'idle days/1.jpeg',
+          'idle days/2.jpeg',
+          'idle days/3.JPG',
+          'idle days/4.JPG',
+          'idle days/5.jpg',
+          'idle days/6.JPG',
+          'idle days/7.jpeg',
+          'idle days/8.jpg',
+          'idle days/9.JPG',
+          'idle days/10.JPG',
+          'idle days/11.jpeg',
+          'idle days/12.JPG',
+          'idle days/13.JPG',
+          'idle days/14.JPG',
+          'idle days/15.JPG',
+        ]
+      },
+      4: { title: 'untitled',          category: 'Photography',         year: '2024', location: '',                   count: '4 photographs',  nextId: 5, nextTitle: 'PELARA-27b',
+        heroImg: 'postavarul/1.jpeg',
+        images: [
+          'postavarul/1.jpeg',
+          'postavarul/2.jpeg',
+          'postavarul/3.JPEG',
+          'postavarul/4.JPEG',
+        ]
+      },
+      5: { title: 'PELARA-27b',       category: 'Photography',         year: '2024', location: '',                   count: '5 photographs',  nextId: 6, nextTitle: 'untitled',
+        heroImg: 'pelara-27b/1.JPG',
+        images: [
+          'pelara-27b/1.JPG',
+          'pelara-27b/2.JPG',
+          'pelara-27b/3.JPG',
+          'pelara-27b/4.JPG',
+          'pelara-27b/5.JPG',
+        ]
+      },
+      6: { title: 'untitled',        category: 'Photography',         year: '2024', location: 'Danube Delta',        count: '8 photographs',  nextId: 1, nextTitle: 'Umbrella Diaries',
+        heroImg: 'delta/3.jpeg',
+        layout: 'mixed',
+        groups: [
+          { type: 'diptych', indices: [0, 1] },
+          { type: 'single',  indices: [2] },
+          { type: 'single',  indices: [3] },
+          { type: 'single',  indices: [4] },
+          { type: 'single',  indices: [5] },
+          { type: 'single',  indices: [6] },
+          { type: 'single',  indices: [7] },
+        ],
+        images: [
+          'delta/1.jpeg',
+          'delta/2.jpeg',
+          'delta/3.jpeg',
+          'delta/4.jpeg',
+          'delta/5.jpg',
+          'delta/6.jpg',
+          'delta/7.jpeg',
+          'delta/8.jpg',
+        ]
+      },
       7: { title: 'Pale Season',     category: 'Editorial',           year: '2022', location: 'Bucharest · London',  count: '13 photographs', nextId: 8, nextTitle: 'Margins',       heroBg: 'pt-7' },
       8: { title: 'Margins',         category: 'Street Photography',  year: '2022', location: 'Eastern Europe',      count: '18 photographs', nextId: 1, nextTitle: 'Umbrella Diaries', heroBg: 'pt-8' },
     };
@@ -697,40 +834,52 @@
     if (p.images) {
       const grid = document.getElementById('photo-grid');
       grid.innerHTML = '';
-      grid.className = p.layout === 'diptych' ? 'photo-grid-diptych' : 'photo-grid-single';
 
-      p.images.forEach((src, i) => {
+      function makePhotoItem(src, idx, extraClass) {
         const item = document.createElement('div');
-        item.className = 'photo-item';
-        item.dataset.index = String(i);
-        item.style.animationDelay = (i * 0.06) + 's';
-
+        item.className = 'photo-item ' + extraClass;
+        item.dataset.index = String(idx);
+        item.style.animationDelay = (idx * 0.06) + 's';
         const imgWrap = document.createElement('div');
         imgWrap.className = 'photo-item-img';
-
         const img = document.createElement('img');
         img.src = src;
-        img.alt = p.title + ' — ' + (i + 1);
-
+        img.alt = p.title + ' — ' + (idx + 1);
         const num = document.createElement('div');
         num.className = 'photo-item-num';
-        num.textContent = String(i + 1).padStart(2, '0');
-
+        num.textContent = String(idx + 1).padStart(2, '0');
         imgWrap.appendChild(img);
         item.appendChild(imgWrap);
         item.appendChild(num);
-        grid.appendChild(item);
-      });
+        return item;
+      }
+
+      if (p.layout === 'mixed') {
+        grid.className = 'photo-grid-mixed';
+        p.groups.forEach(group => {
+          if (group.type === 'single') {
+            grid.appendChild(makePhotoItem(p.images[group.indices[0]], group.indices[0], 'mixed-single-item'));
+          } else if (group.type === 'diptych') {
+            const row = document.createElement('div');
+            row.className = 'mixed-diptych-row';
+            group.indices.forEach(idx => row.appendChild(makePhotoItem(p.images[idx], idx, 'mixed-diptych-item')));
+            grid.appendChild(row);
+          }
+        });
+      } else {
+        grid.className = p.layout === 'diptych' ? 'photo-grid-diptych' : 'photo-grid-single';
+        p.images.forEach((src, i) => grid.appendChild(makePhotoItem(src, i, '')));
+      }
     }
 
     // Descriptions per project
     const descriptions = {
       1: `<p>This series explores umbrellas as silent witnesses of everyday life. They mark small territories of intimacy, offering at the same time protection and exposure. At times, they even take on the personality of the ones holding them, becoming portraits without faces.</p>`,
       2: `<p>Echoes explores the subtle correspondences between landscapes that never meet. The images speak to one another and invite the viewer to look beyond their locations, revealing how nature often returns to the same gestures of form.</p><p>From water to ice, from mud to stone, the works follow a gradual cycle of transformation, where each formation becomes an imprint shaped by time.</p>`,
-      3: `<p>Soft Focus began as an experiment in intentional imperfection — allowing the lens to breathe, to soften, to release the grip of sharp definition.</p><p>These editorial images ask what happens when clarity gives way to feeling, when a portrait becomes a mood rather than a document.</p>`,
-      4: `<p>Inner Light is an intimate portrait series made during a year of quiet introspection. Each subject was photographed in natural window light, in silence, without direction.</p><p>The result is a collection of faces caught in the private moment before the mask is put on — raw, unhurried, present.</p>`,
-      5: `<p>Transit follows commuters, travellers, and wanderers through the liminal spaces of central European transport: trams, metro stations, border crossings at dusk.</p><p>These are photographs of people between places — neither here nor there, suspended in the ordinary miracle of going somewhere.</p>`,
-      6: `<p>Nocturne was shot exclusively between midnight and 4am across Bucharest's old quarter. Available light only — neon signs, headlights, candlelit windows.</p><p>The series inverts the conventions of fashion photography, placing garments in an environment of urban poetry and ambiguity.</p>`,
+      3: `<p>Idle Days is a quiet document of stillness — moments between tasks, afternoons without agenda, the particular quality of light in rooms where nothing is happening.</p><p>Shot across a series of slow seasons, Idle Days finds the extraordinary in deliberate rest, asking what we see when we stop looking for something specific.</p>`,
+      4: `<p></p>`,
+      5: `<p></p>`,
+      6: `<p></p>`,
       7: `<p>Pale Season is a study in restraint. Shot during a London winter on medium-format film, every image inhabits the narrow tonal range between white and grey.</p><p>Collaborating with stylist Ioana Mihai, the series challenges the assumption that fashion must announce itself loudly.</p>`,
       8: `<p>Margins documents the peripheral neighbourhoods and forgotten corners of Eastern European cities — the spaces that development hasn't yet reached, where old light persists.</p><p>This series began as a personal archive and grew into an urgent document of a world mid-transformation, on the edge of disappearing.</p>`,
     };

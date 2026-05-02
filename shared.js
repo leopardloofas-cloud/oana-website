@@ -52,11 +52,14 @@
         // Solid bg after scrolling past hero
         if (y > 80) {
           nav.classList.add('solid');
-          nav.classList.remove('light-links', 'light-logo');
+          nav.classList.remove('light-links', 'light-logo', 'logo-hidden');
         } else {
           nav.classList.remove('solid');
           if (nav.dataset.lightOnTop === 'true') {
             nav.classList.add('light-links', 'light-logo');
+          }
+          if (nav.dataset.hideLogoOnTop === 'true') {
+            nav.classList.add('logo-hidden');
           }
         }
 
@@ -96,11 +99,12 @@
 
   // Enter animation on link click
   document.querySelectorAll('a[href]').forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto') || href.startsWith('tel')) return;
+    const staticHref = link.getAttribute('href');
+    if (!staticHref || staticHref.startsWith('#') || staticHref.startsWith('http') || staticHref.startsWith('mailto') || staticHref.startsWith('tel')) return;
 
     link.addEventListener('click', e => {
       e.preventDefault();
+      const href = link.href;
       overlay.classList.add('enter');
       overlay.addEventListener('animationend', () => {
         window.location.href = href;
@@ -118,6 +122,41 @@
       a.classList.add('active');
     }
   });
+})();
+
+// --- Marquee Loop ---
+(function() {
+  const track = document.querySelector('.disciplines-track');
+  const inner = document.querySelector('.disciplines-inner');
+  if (!track || !inner) return;
+
+  function init() {
+    track.style.animation = 'none';
+    track.querySelectorAll('[aria-hidden="true"]').forEach(el => el.remove());
+
+    // Measure one copy's width (items + padding-right gap)
+    const w = inner.getBoundingClientRect().width;
+
+    // Clone enough times so the track always overfills the viewport.
+    // At the animation end (offset = -w) we show pixels w…w+vw, so we need
+    // total track width >= w + vw, i.e. at least ceil(vw/w) extra copies.
+    const n = Math.ceil(window.innerWidth / w) + 1;
+    for (let i = 0; i < n; i++) {
+      const clone = inner.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+    }
+
+    track.style.setProperty('--marquee-offset', '-' + w + 'px');
+    track.getBoundingClientRect(); // force reflow before re-enabling animation
+    track.style.animation = 'marquee 18s linear infinite';
+  }
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(init);
+  } else {
+    window.addEventListener('load', init);
+  }
 })();
 
 // --- Mobile Hamburger ---

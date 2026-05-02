@@ -94,6 +94,12 @@ button { cursor: none; border: none; background: none; font-family: inherit; }
   height: 22px;
   width: auto;
   display: block;
+  transition: opacity 0.4s ease;
+}
+
+.nav.logo-hidden .nav-logo {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .nav-links {
