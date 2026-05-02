@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project — Oana Ruxanda</title>
+  <link rel="icon" href="uploads/favicon-oana.png" type="image/png">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    body { background: var(--cream); }
+
+    /* ---- Project Hero ---- */
+    .project-hero {
+      height: 100vh;
+      min-height: 560px;
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+    }
+    .project-hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0;
+      animation: fadeIn 1.6s 0.3s var(--ease-out) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(1.04); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .project-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(13,12,11,0.8) 0%, rgba(13,12,11,0.15) 60%);
+      z-index: 1;
+    }
+    .project-hero-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 64px 64px;
+      z-index: 2;
+      opacity: 0;
+      animation: slideUp 1s 0.8s var(--ease-out) forwards;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .project-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(250,250,248,0.6);
+      margin-bottom: 40px;
+      transition: gap 0.3s var(--ease-out), color 0.3s;
+    }
+    .project-back:hover { color: var(--white); gap: 16px; }
+    .project-back::before { content: '←'; }
+
+    .project-category {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--stone-light);
+      margin-bottom: 16px;
+    }
+    .project-title {
+      font-family: var(--font-serif);
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .project-year {
+      font-size: 13px;
+      color: rgba(250,250,248,0.45);
+      letter-spacing: 0.1em;
+    }
+
+    /* ---- Project Info ---- */
+    .project-info {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      padding: 96px 64px;
+      border-bottom: 1px solid var(--stone-light);
+    }
+    .project-meta-item {
+      margin-bottom: 32px;
+    }
+    .project-meta-label {
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--stone-dark);
+      margin-bottom: 8px;
+    }
+    .project-meta-value {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--charcoal);
+    }
+    .project-description {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 2.5vw, 28px);
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--charcoal);
+    }
+    .project-description p + p { margin-top: 24px; }
+
+    /* ---- Photo Grid ---- */
+    .photo-grid {
+      padding: 0 4px 4px;
+    }
+    .photo-row {
+      display: grid;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .photo-row.single { grid-template-columns: 1fr; }
+    .photo-row.double { grid-template-columns: 1fr 1fr; }
+    .photo-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+    .photo-row.asymL  { grid-template-columns: 1.6fr 1fr; }
+    .photo-row.asymR  { grid-template-columns: 1fr 1.6fr; }
+
+    .photo-item {
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+    }
+    .photo-item.tall   { aspect-ratio: 3/4; }
+    .photo-item.square { aspect-ratio: 1/1; }
+    .photo-item.wide   { aspect-ratio: 16/9; }
+    .photo-item.cinema { aspect-ratio: 21/9; }
+
+    .photo-item-img {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s var(--ease-out);
+    }
+    .photo-item:hover .photo-item-img { transform: scale(1.03); }
+
+    .photo-item-num {
+      position: absolute;
+      top: 20px; left: 20px;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: rgba(250,250,248,0.5);
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .photo-item:hover .photo-item-num { opacity: 1; }
+
+    /* Placeholder tones */
+    .pt-1 { background: linear-gradient(155deg,#2a2018 0%,#0f0d0b 100%); }
+    .pt-2 { background: linear-gradient(155deg,#c8bfb0 0%,#9a8f82 100%); }
+    .pt-3 { background: linear-gradient(155deg,#ede8e0 0%,#cfc3b2 100%); }
+    .pt-4 { background: linear-gradient(155deg,#1e1a14 0%,#2c2016 100%); }
+    .pt-5 { background: linear-gradient(155deg,#b0a898 0%,#8a7f72 100%); }
+    .pt-6 { background: linear-gradient(155deg,#141210 0%,#201a12 100%); }
+    .pt-7 { background: linear-gradient(155deg,#d4c4b0 0%,#b8a99a 100%); }
+    .pt-8 { background: linear-gradient(155deg,#382e24 0%,#1a1410 100%); }
+    .pt-9 { background: linear-gradient(155deg,#f0ebe4 0%,#ddd0be 100%); }
+
+    .ph-fig2 {
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.1);
+      clip-path: polygon(25% 0%,75% 0%,82% 100%,18% 100%);
+    }
+    .ph-fig2.light { background: rgba(255,255,255,0.08); }
+
+    /* ---- Lightbox ---- */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(13,12,11,0.95);
+      z-index: 8000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s var(--ease-out);
+    }
+    #lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .lb-inner {
+      position: relative;
+      max-width: 90vw;
+      max-height: 88vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lb-placeholder {
+      width: min(700px, 85vw);
+      height: min(500px, 75vh);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: hidden;
+      transform: scale(0.94);
+      transition: transform 0.5s var(--ease-out);
+    }
+    #lightbox.open .lb-placeholder { transform: scale(1); }
+
+    .lb-close {
+      position: absolute;
+      top: 24px; right: 24px;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: none;
+      color: rgba(250,250,248,0.6);
+      font-size: 22px;
+      transition: color 0.2s, transform 0.2s;
+      z-index: 1;
+    }
+    .lb-close:hover { color: var(--white); transform: rotate(90deg); }
+
+    .lb-nav {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px; height: 48px;
+      cursor: none;
+      color: rgba(250,250,248,0.5);
+      font-size: 18px;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .lb-nav:hover { color: var(--white); }
+    .lb-prev { left: -72px; }
+    .lb-prev:hover { transform: translateY(-50%) translateX(-4px); }
+    .lb-next { right: -72px; }
+    .lb-next:hover { transform: translateY(-50%) translateX(4px); }
+
+    .lb-counter {
+      position: absolute;
+      bottom: -36px; left: 50%; transform: translateX(-50%);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: rgba(250,250,248,0.35);
+    }
+
+    /* ---- Next Project ---- */
+    .next-project {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 50vh;
+      border-top: 1px solid var(--stone-light);
+    }
+    .next-project-text {
+      padding: 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: var(--cream);
+    }
+    .next-project-label {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--stone-dark);
+      margin-bottom: 24px;
+    }
+    .next-project-title {
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 300;
+      margin-bottom: 32px;
+      line-height: 1.1;
+    }
+    .next-project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: gap 0.3s var(--ease-out);
+    }
+    .next-project-link:hover { gap: 20px; }
+    .next-project-link::after { content: '→'; }
+    .next-project-img {
+      position: relative;
+      overflow: hidden;
+      background: var(--cream-dark);
+    }
+    .next-project-img-fill {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      transition: transform 0.8s var(--ease-out);
+    }
+    .next-project:hover .next-project-img-fill { transform: scale(1.04); }
+
+    /* ---- Single-column photo grid (used when project has real images) ---- */
+    .photo-grid-single {
+      max-width: 1920px;
+      margin: 0 auto;
+      padding: 40px 48px 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .photo-grid-single .photo-item {
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+      opacity: 0;
+      animation: fadeUp 0.7s var(--ease-out) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .photo-grid-single .photo-item-img {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      transform: none;
+      height: auto;
+    }
+    .photo-grid-single .photo-item-img img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.8s var(--ease-out);
+    }
+    .photo-grid-single .photo-item:hover .photo-item-img img {
+      transform: scale(1.03);
+    }
+
+    .photo-grid-diptych {
+      max-width: 1920px;
+      margin: 0 auto;
+      padding: 40px 48px 120px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .photo-grid-diptych .photo-item {
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+      opacity: 0;
+      aspect-ratio: 4/3;
+      animation: fadeUp 0.7s var(--ease-out) forwards;
+    }
+    .photo-grid-diptych .photo-item-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .photo-grid-diptych .photo-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s var(--ease-out);
+    }
+    .photo-grid-diptych .photo-item:hover .photo-item-img img {
+      transform: scale(1.03);
+    }
+    @media (max-width: 700px) {
+      .photo-grid-diptych { grid-template-columns: 1fr; padding: 24px 20px 64px; }
+    }
+
+    @media (max-width: 900px) {
+      .project-info { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
+      .project-hero-content { padding: 40px 24px; }
+      .photo-row.asymL,
+      .photo-row.asymR,
+      .photo-row.triple { grid-template-columns: 1fr; }
+      .photo-grid { padding: 0 2px 2px; }
+      .photo-grid-single { padding: 24px 20px 80px; }
+      .next-project { grid-template-columns: 1fr; }
+      .next-project-img { height: 240px; }
+      .next-project-text { padding: 56px 24px; }
+      .lb-prev { left: -48px; }
+      .lb-next { right: -48px; }
+    }
+    @media (max-width: 600px) {
+      .project-hero-content { padding: 32px 20px; }
+      .project-title { font-size: 40px; }
+      .project-info { padding: 48px 20px; }
+      .photo-grid-single { padding: 16px 20px 64px; max-width: 100%; }
+      .lb-inner { max-width: 100vw; }
+      .lb-prev { left: 8px; }
+      .lb-next { right: 8px; }
+      .lb-close { top: 12px; right: 12px; }
+      .lb-counter { bottom: -28px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <div id="page-transition"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <button class="lb-close" id="lb-close">✕</button>
+    <div class="lb-inner">
+      <button class="lb-nav lb-prev" id="lb-prev">←</button>
+      <div class="lb-placeholder" id="lb-content"></div>
+      <button class="lb-nav lb-next" id="lb-next">→</button>
+      <div class="lb-counter" id="lb-counter"></div>
+    </div>
+  </div>
+
+  <nav class="nav light-links light-logo" data-light-on-top="true">
+    <a class="nav-logo" href="index.html">
+      <img src="uploads/logo-oana.png" alt="Oana Ruxanda">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="project-hero" id="project-hero">
+    <div class="project-hero-img pt-1" id="hero-img">
+      <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:35%;height:90%;background:rgba(255,255,255,0.05);clip-path:polygon(25% 0%,75% 0%,82% 100%,18% 100%);"></div>
+    </div>
+    <div class="project-hero-overlay"></div>
+    <div class="project-hero-content">
+      <a href="projects.html" class="project-back">All Projects</a>
+      <div class="project-category" id="project-category">Street Photography</div>
+      <h1 class="project-title" id="project-title">Between Cities</h1>
+      <div class="project-year" id="project-year">2024</div>
+    </div>
+  </section>
+
+  <!-- Project Info -->
+  <section class="project-info">
+    <div class="project-meta reveal">
+      <div class="project-meta-item">
+        <div class="project-meta-label">Year</div>
+        <div class="project-meta-value" id="meta-year">2024</div>
+      </div>
+      <div class="project-meta-item">
+        <div class="project-meta-label">Category</div>
+        <div class="project-meta-value" id="meta-category">Street</div>
+      </div>
+      <div class="project-meta-item">
+        <div class="project-meta-label">Images</div>
+        <div class="project-meta-value" id="meta-count">12 photographs</div>
+      </div>
+      <div class="project-meta-item">
+        <div class="project-meta-label">Location</div>
+        <div class="project-meta-value" id="meta-location">Bucharest · Vienna</div>
+      </div>
+    </div>
+    <div class="project-description reveal reveal-delay-2" id="project-description">
+      <p>Between Cities is a meditation on movement and stillness — capturing the moments that exist between departure and arrival, between who we were and who we are becoming.</p>
+      <p>Shot over six months across Eastern European cities, this series explores the quiet poetry of public spaces: waiting rooms, empty platforms, figures caught in transit. Each frame asks the same question: where does a person truly belong?</p>
+    </div>
+  </section>
+
+  <!-- Photo Grid -->
+  <section class="photo-grid" id="photo-grid">
+
+    <div class="photo-row single reveal">
+      <div class="photo-item cinema pt-1" data-index="0">
+        <div class="photo-item-img pt-4"></div>
+        <div class="photo-item-num">01</div>
+      </div>
+    </div>
+
+    <div class="photo-row asymL reveal reveal-delay-1">
+      <div class="photo-item tall pt-2" data-index="1">
+        <div class="photo-item-img pt-2">
+          <div class="ph-fig2" style="width:50%;height:85%;background:rgba(0,0,0,0.1);"></div>
+        </div>
+        <div class="photo-item-num">02</div>
+      </div>
+      <div class="photo-item square pt-4" data-index="2">
+        <div class="photo-item-img pt-4">
+          <div class="ph-fig2 light" style="width:45%;height:80%;"></div>
+        </div>
+        <div class="photo-item-num">03</div>
+      </div>
+    </div>
+
+    <div class="photo-row double reveal reveal-delay-2">
+      <div class="photo-item wide pt-5" data-index="3">
+        <div class="photo-item-img pt-5">
+          <div class="ph-fig2" style="width:40%;height:75%;background:rgba(0,0,0,0.12);"></div>
+        </div>
+        <div class="photo-item-num">04</div>
+      </div>
+      <div class="photo-item wide pt-6" data-index="4">
+        <div class="photo-item-img pt-6">
+          <div class="ph-fig2 light" style="width:55%;height:80%;"></div>
+        </div>
+        <div class="photo-item-num">05</div>
+      </div>
+    </div>
+
+    <div class="photo-row asymR reveal">
+      <div class="photo-item square pt-7" data-index="5">
+        <div class="photo-item-img pt-7">
+          <div class="ph-fig2" style="width:50%;height:85%;background:rgba(0,0,0,0.08);"></div>
+        </div>
+        <div class="photo-item-num">06</div>
+      </div>
+      <div class="photo-item tall pt-8" data-index="6">
+        <div class="photo-item-img pt-8">
+          <div class="ph-fig2 light" style="width:45%;height:88%;"></div>
+        </div>
+        <div class="photo-item-num">07</div>
+      </div>
+    </div>
+
+    <div class="photo-row triple reveal reveal-delay-1">
+      <div class="photo-item square pt-3" data-index="7">
+        <div class="photo-item-img pt-3">
+          <div class="ph-fig2" style="width:45%;height:80%;background:rgba(0,0,0,0.07);"></div>
+        </div>
+        <div class="photo-item-num">08</div>
+      </div>
+      <div class="photo-item square pt-1" data-index="8">
+        <div class="photo-item-img pt-1">
+          <div class="ph-fig2 light" style="width:50%;height:85%;"></div>
+        </div>
+        <div class="photo-item-num">09</div>
+      </div>
+      <div class="photo-item square pt-9" data-index="9">
+        <div class="photo-item-img pt-9">
+          <div class="ph-fig2" style="width:40%;height:78%;background:rgba(0,0,0,0.08);"></div>
+        </div>
+        <div class="photo-item-num">10</div>
+      </div>
+    </div>
+
+    <div class="photo-row single reveal reveal-delay-2">
+      <div class="photo-item wide pt-4" data-index="10">
+        <div class="photo-item-img pt-4">
+          <div class="ph-fig2 light" style="width:30%;height:90%;left:30%;transform:none;"></div>
+          <div class="ph-fig2 light" style="width:25%;height:85%;left:60%;transform:none;"></div>
+        </div>
+        <div class="photo-item-num">11</div>
+      </div>
+    </div>
+
+    <div class="photo-row double reveal reveal-delay-3">
+      <div class="photo-item tall pt-2" data-index="11">
+        <div class="photo-item-img pt-2">
+          <div class="ph-fig2" style="width:55%;height:90%;background:rgba(0,0,0,0.1);"></div>
+        </div>
+        <div class="photo-item-num">12</div>
+      </div>
+      <div class="photo-item tall pt-6" data-index="12">
+        <div class="photo-item-img pt-6">
+          <div class="ph-fig2 light" style="width:48%;height:88%;"></div>
+        </div>
+        <div class="photo-item-num">13</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Next Project -->
+  <div class="next-project reveal">
+    <div class="next-project-text">
+      <div class="next-project-label">Next Project</div>
+      <div class="next-project-title" id="next-title">Silhouette</div>
+      <a href="project-detail.html?id=2" class="next-project-link" id="next-link">View Project</a>
+    </div>
+    <div class="next-project-img">
+      <div class="next-project-img-fill pt-2">
+        <div class="ph-fig2" style="width:45%;height:85%;background:rgba(0,0,0,0.1);"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer reveal">
+    <div class="footer-logo">
+      <img src="uploads/logo-oana.png" alt="Oana Ruxanda">
+    </div>
+    <span>© 2024 Oana Ruxanda</span>
+    <span>All rights reserved</span>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    // Project data
+    const projects = {
+      1: {
+        title: 'Umbrella Diaries', category: 'Street Photography', year: '2024', location: 'Bucharest', count: '10 photographs',
+        nextId: 2, nextTitle: 'Echoes',
+        heroImg: 'uploads/umbrella-diaries/cover.jpeg',
+        images: [
+          'uploads/umbrella-diaries/1.jpeg',
+          'uploads/umbrella-diaries/2.jpeg',
+          'uploads/umbrella-diaries/3.jpeg',
+          'uploads/umbrella-diaries/4.jpeg',
+          'uploads/umbrella-diaries/5.jpeg',
+          'uploads/umbrella-diaries/6.jpeg',
+          'uploads/umbrella-diaries/7.jpeg',
+          'uploads/umbrella-diaries/8.jpeg',
+          'uploads/umbrella-diaries/9.jpeg',
+          'uploads/umbrella-diaries/10.jpeg',
+        ]
+      },
+      2: { title: 'Echoes',           category: 'Fashion',             year: '2024', location: 'Paris · Bucharest',   count: '8 photographs',  nextId: 3, nextTitle: 'Soft Focus',
+        layout: 'diptych', heroImg: 'echoes/Oana Ruxanda_echoes_dyptic 3.2.jpg',
+        images: [
+          'echoes/Oana Ruxanda_echoes_diptych 1.1.jpg',
+          'echoes/Oana Ruxanda_echoes_diptych 1.2.jpg',
+          'echoes/Oana Ruxanda_echoes_diptych 2.1.jpg',
+          'echoes/Oana Ruxanda_echoes_diptych 2.2.JPG',
+          'echoes/Oana Ruxanda_echoes_dyptic 3.1.JPG',
+          'echoes/Oana Ruxanda_echoes_dyptic 3.2.jpg',
+          'echoes/Oana Ruxanda_echoes_dyptic 4.1.jpg',
+          'echoes/Oana Ruxanda_echoes_dyptic 4.2.JPG',
+        ]
+      },
+      3: { title: 'Soft Focus',      category: 'Editorial',           year: '2023', location: 'Bucharest',           count: '14 photographs', nextId: 4, nextTitle: 'Inner Light',   heroBg: 'pt-4' },
+      4: { title: 'Inner Light',     category: 'Portrait',            year: '2023', location: 'Bucharest · Berlin',  count: '9 photographs',  nextId: 5, nextTitle: 'Transit',       heroBg: 'pt-5' },
+      5: { title: 'Transit',         category: 'Street Photography',  year: '2023', location: 'Vienna · Budapest',   count: '16 photographs', nextId: 6, nextTitle: 'Nocturne',      heroBg: 'pt-3' },
+      6: { title: 'Nocturne',        category: 'Fashion',             year: '2023', location: 'Bucharest',           count: '11 photographs', nextId: 7, nextTitle: 'Pale Season',   heroBg: 'pt-6' },
+      7: { title: 'Pale Season',     category: 'Editorial',           year: '2022', location: 'Bucharest · London',  count: '13 photographs', nextId: 8, nextTitle: 'Margins',       heroBg: 'pt-7' },
+      8: { title: 'Margins',         category: 'Street Photography',  year: '2022', location: 'Eastern Europe',      count: '18 photographs', nextId: 1, nextTitle: 'Umbrella Diaries', heroBg: 'pt-8' },
+    };
+
+    // Populate from URL param
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id')) || 1;
+    const p = projects[id] || projects[1];
+
+    document.getElementById('project-title').textContent = p.title;
+    document.getElementById('project-category').textContent = p.category;
+    document.getElementById('project-year').textContent = p.year;
+    document.getElementById('meta-year').textContent = p.year;
+    document.getElementById('meta-category').textContent = p.category;
+    document.getElementById('meta-count').textContent = p.count;
+    document.getElementById('meta-location').textContent = p.location;
+    document.title = p.title + ' — Oana Ruxanda';
+
+    // Update hero
+    const heroImg = document.getElementById('hero-img');
+    if (p.heroImg) {
+      heroImg.className = 'project-hero-img';
+      heroImg.innerHTML = '';
+      const hImg = document.createElement('img');
+      hImg.src = p.heroImg;
+      hImg.alt = p.title;
+      hImg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+      heroImg.appendChild(hImg);
+    } else {
+      heroImg.className = 'project-hero-img ' + p.heroBg;
+    }
+    heroImg.style.opacity = '0';
+    heroImg.style.animation = 'fadeIn 1.6s 0.3s var(--ease-out) forwards';
+
+    // Next project
+    document.getElementById('next-title').textContent = p.nextTitle;
+    document.getElementById('next-link').href = 'project-detail.html?id=' + p.nextId;
+    const nextP = projects[p.nextId];
+    if (nextP && nextP.heroImg) {
+      const nextImgWrap = document.querySelector('.next-project-img');
+      nextImgWrap.innerHTML = '';
+      const nextImg = document.createElement('img');
+      nextImg.src = nextP.heroImg;
+      nextImg.alt = p.nextTitle;
+      nextImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.9s var(--ease-out);';
+      nextImgWrap.appendChild(nextImg);
+      nextImgWrap.closest('.next-project').addEventListener('mouseenter', () => nextImg.style.transform = 'scale(1.04)');
+      nextImgWrap.closest('.next-project').addEventListener('mouseleave', () => nextImg.style.transform = '');
+    }
+
+    // Rebuild grid when project has real images
+    if (p.images) {
+      const grid = document.getElementById('photo-grid');
+      grid.innerHTML = '';
+      grid.className = p.layout === 'diptych' ? 'photo-grid-diptych' : 'photo-grid-single';
+
+      p.images.forEach((src, i) => {
+        const item = document.createElement('div');
+        item.className = 'photo-item';
+        item.dataset.index = String(i);
+        item.style.animationDelay = (i * 0.06) + 's';
+
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'photo-item-img';
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = p.title + ' — ' + (i + 1);
+
+        const num = document.createElement('div');
+        num.className = 'photo-item-num';
+        num.textContent = String(i + 1).padStart(2, '0');
+
+        imgWrap.appendChild(img);
+        item.appendChild(imgWrap);
+        item.appendChild(num);
+        grid.appendChild(item);
+      });
+    }
+
+    // Descriptions per project
+    const descriptions = {
+      1: `<p>This series explores umbrellas as silent witnesses of everyday life. They mark small territories of intimacy, offering at the same time protection and exposure. At times, they even take on the personality of the ones holding them, becoming portraits without faces.</p>`,
+      2: `<p>Echoes explores the subtle correspondences between landscapes that never meet. The images speak to one another and invite the viewer to look beyond their locations, revealing how nature often returns to the same gestures of form.</p><p>From water to ice, from mud to stone, the works follow a gradual cycle of transformation, where each formation becomes an imprint shaped by time.</p>`,
+      3: `<p>Soft Focus began as an experiment in intentional imperfection — allowing the lens to breathe, to soften, to release the grip of sharp definition.</p><p>These editorial images ask what happens when clarity gives way to feeling, when a portrait becomes a mood rather than a document.</p>`,
+      4: `<p>Inner Light is an intimate portrait series made during a year of quiet introspection. Each subject was photographed in natural window light, in silence, without direction.</p><p>The result is a collection of faces caught in the private moment before the mask is put on — raw, unhurried, present.</p>`,
+      5: `<p>Transit follows commuters, travellers, and wanderers through the liminal spaces of central European transport: trams, metro stations, border crossings at dusk.</p><p>These are photographs of people between places — neither here nor there, suspended in the ordinary miracle of going somewhere.</p>`,
+      6: `<p>Nocturne was shot exclusively between midnight and 4am across Bucharest's old quarter. Available light only — neon signs, headlights, candlelit windows.</p><p>The series inverts the conventions of fashion photography, placing garments in an environment of urban poetry and ambiguity.</p>`,
+      7: `<p>Pale Season is a study in restraint. Shot during a London winter on medium-format film, every image inhabits the narrow tonal range between white and grey.</p><p>Collaborating with stylist Ioana Mihai, the series challenges the assumption that fashion must announce itself loudly.</p>`,
+      8: `<p>Margins documents the peripheral neighbourhoods and forgotten corners of Eastern European cities — the spaces that development hasn't yet reached, where old light persists.</p><p>This series began as a personal archive and grew into an urgent document of a world mid-transformation, on the edge of disappearing.</p>`,
+    };
+
+    const desc = document.getElementById('project-description');
+    if (descriptions[id]) desc.innerHTML = descriptions[id];
+
+    // Lightbox — only include photo items from visible rows
+    const lb = document.getElementById('lightbox');
+    const lbContent = document.getElementById('lb-content');
+    const lbCounter = document.getElementById('lb-counter');
+    const photoItems = [...document.querySelectorAll('.photo-item')].filter(item => {
+      const row = item.closest('.photo-row');
+      return !row || row.style.display !== 'none';
+    });
+    let currentIdx = 0;
+
+    const toneClasses = ['pt-1','pt-2','pt-3','pt-4','pt-5','pt-6','pt-7','pt-8','pt-9'];
+
+    function openLightbox(idx) {
+      currentIdx = idx;
+      renderLb();
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function renderLb() {
+      if (p.images && p.images[currentIdx]) {
+        lbContent.className = 'lb-placeholder';
+        lbContent.style.cssText = 'display:flex;align-items:center;justify-content:center;width:auto;height:auto;max-width:90vw;max-height:85vh;';
+        lbContent.innerHTML = `<img src="${p.images[currentIdx]}" alt="${p.title}" style="max-width:90vw;max-height:85vh;width:auto;height:auto;object-fit:contain;display:block;transform:scale(0.94);transition:transform 0.5s var(--ease-out);">`;
+        requestAnimationFrame(() => {
+          const img = lbContent.querySelector('img');
+          if (img) img.style.transform = 'scale(1)';
+        });
+      } else {
+        const tc = toneClasses[currentIdx % toneClasses.length];
+        lbContent.className = 'lb-placeholder ' + tc;
+        lbContent.style.cssText = '';
+        lbContent.innerHTML = `<div style="width:50%;height:90%;background:rgba(255,255,255,0.07);clip-path:polygon(25% 0%,75% 0%,82% 100%,18% 100%);"></div>`;
+      }
+      lbCounter.textContent = (currentIdx + 1) + ' / ' + photoItems.length;
+    }
+
+    photoItems.forEach((item, i) => {
+      item.style.cursor = 'none';
+      item.addEventListener('click', () => openLightbox(i));
+    });
+
+    document.getElementById('lb-close').addEventListener('click', closeLightbox);
+    document.getElementById('lb-prev').addEventListener('click', () => {
+      currentIdx = (currentIdx - 1 + photoItems.length) % photoItems.length;
+      renderLb();
+    });
+    document.getElementById('lb-next').addEventListener('click', () => {
+      currentIdx = (currentIdx + 1) % photoItems.length;
+      renderLb();
+    });
+    lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') { currentIdx = (currentIdx - 1 + photoItems.length) % photoItems.length; renderLb(); }
+      if (e.key === 'ArrowRight') { currentIdx = (currentIdx + 1) % photoItems.length; renderLb(); }
+    });
+  </script>
+</body>
+</html>

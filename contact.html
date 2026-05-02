@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Oana Ruxanda</title>
+  <link rel="icon" href="uploads/favicon-oana.png" type="image/png">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    body { background: var(--cream); }
+
+    /* ---- Artist Section ---- */
+    .artist-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* Left: image */
+    .artist-image {
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+      min-height: 600px;
+    }
+    .artist-image-fill {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(155deg, #2a2018 0%, #0f0d0b 100%);
+      opacity: 0;
+      animation: fadeIn 1.8s 0.2s var(--ease-out) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(1.04); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    /* Portrait placeholder */
+    .artist-portrait-placeholder {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 55%;
+      height: 90%;
+      background: rgba(255,255,255,0.06);
+      clip-path: polygon(18% 0%, 82% 0%, 90% 100%, 10% 100%);
+    }
+    .artist-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(13,12,11,0.4) 0%, transparent 50%);
+      z-index: 1;
+    }
+    .artist-image-caption {
+      position: absolute;
+      bottom: 40px; left: 40px;
+      z-index: 2;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(250,250,248,0.4);
+    }
+
+    /* Right: bio + form */
+    .artist-content {
+      padding: calc(var(--nav-h) + 80px) 72px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .bio-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--stone-dark);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: slideUp 0.8s 0.5s var(--ease-out) forwards;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .bio-name {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: slideUp 0.8s 0.65s var(--ease-out) forwards;
+    }
+    .bio-name em { font-style: italic; color: var(--stone-dark); }
+
+    .bio-text {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--stone-dark);
+      max-width: 480px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: slideUp 0.8s 0.8s var(--ease-out) forwards;
+    }
+    .bio-text p + p { margin-top: 16px; }
+
+    /* Social links */
+    .social-links {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 64px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: slideUp 0.8s 1s var(--ease-out) forwards;
+    }
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      position: relative;
+      padding-bottom: 2px;
+    }
+    .social-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--charcoal);
+      transition: width 0.4s var(--ease-out);
+    }
+    .social-link:hover::after { width: 100%; }
+    .social-icon {
+      width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Divider */
+    .contact-divider {
+      width: 48px;
+      height: 1px;
+      background: var(--stone-light);
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: slideUp 0.6s 1.1s var(--ease-out) forwards;
+    }
+
+    /* Contact Form */
+    .form-label-top {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--stone-dark);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: slideUp 0.8s 1.15s var(--ease-out) forwards;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 480px;
+      opacity: 0;
+      animation: slideUp 0.8s 1.25s var(--ease-out) forwards;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .form-field {
+      position: relative;
+      border-bottom: 1px solid var(--stone-light);
+    }
+    .form-field:not(:last-child) { border-right: none; }
+    .form-row .form-field:first-child { border-right: 1px solid var(--stone-light); }
+
+    .form-field label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--stone-dark);
+      padding: 20px 20px 0;
+      transition: color 0.2s;
+    }
+    .form-field:focus-within label { color: var(--charcoal); }
+
+    .form-field input,
+    .form-field textarea,
+    .form-field select {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--charcoal);
+      padding: 8px 20px 20px;
+      resize: none;
+      cursor: none;
+      appearance: none;
+    }
+    .form-field textarea { min-height: 120px; }
+    .form-field select { cursor: none; }
+
+    .form-field::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0;
+      width: 0; height: 2px;
+      background: var(--charcoal);
+      transition: width 0.4s var(--ease-out);
+    }
+    .form-field:focus-within::after { width: 100%; }
+
+    .form-submit {
+      margin-top: 0;
+      border-top: none;
+      display: flex;
+      align-items: stretch;
+    }
+    .btn-submit {
+      flex: 1;
+      padding: 24px 32px;
+      background: var(--charcoal);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      border: none;
+      cursor: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: background 0.3s, gap 0.3s var(--ease-out);
+    }
+    .btn-submit:hover { background: var(--charcoal-mid); gap: 20px; }
+    .btn-submit::after { content: '→'; }
+
+    /* Success message */
+    .form-success {
+      display: none;
+      padding: 32px;
+      border: 1px solid var(--stone-light);
+      text-align: center;
+    }
+    .form-success.visible { display: block; }
+    .form-success-icon {
+      font-family: var(--font-serif);
+      font-size: 36px;
+      color: var(--stone-dark);
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+    .form-success p {
+      font-size: 13px;
+      color: var(--stone-dark);
+      line-height: 1.7;
+    }
+
+    /* ---- Info Strip ---- */
+    .info-strip {
+      background: var(--charcoal);
+      padding: 80px 72px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+    .info-item-label {
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(250,250,248,0.35);
+      margin-bottom: 12px;
+    }
+    .info-item-value {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.4;
+    }
+    .info-item-value a {
+      color: var(--stone-light);
+      position: relative;
+    }
+    .info-item-value a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--stone-light);
+      transition: width 0.4s var(--ease-out);
+    }
+    .info-item-value a:hover::after { width: 100%; }
+
+    @media (max-width: 900px) {
+      .artist-section { grid-template-columns: 1fr; }
+      .artist-image { height: 60vw; min-height: 260px; }
+      .artist-content { padding: 48px 24px 64px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-row .form-field:first-child { border-right: none; }
+      .form-row .form-field[style] { grid-column: span 1 !important; }
+      .info-strip { grid-template-columns: 1fr; padding: 56px 24px; gap: 32px; }
+      .social-links { gap: 16px; }
+    }
+    @media (max-width: 600px) {
+      .artist-image { height: 55vw; }
+      .artist-content { padding: 40px 20px 56px; }
+      .contact-form { max-width: 100%; }
+      .bio-text { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <div id="page-transition"></div>
+
+  <nav class="nav">
+    <a class="nav-logo" href="index.html">
+      <img src="uploads/logo-oana.png" alt="Oana Ruxanda">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <main class="artist-section">
+
+    <!-- Left: Artist Image -->
+    <div class="artist-image">
+      <img src="brand_assets/oana ruxanda.jpg" alt="Oana Ruxanda" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:fadeIn 1.8s 0.2s var(--ease-out) forwards;">
+      <div class="artist-image-overlay"></div>
+      <div class="artist-image-caption">Oana Ruxanda, 2024</div>
+    </div>
+
+    <!-- Right: Bio + Form -->
+    <div class="artist-content">
+
+      <p class="bio-label">The Artist</p>
+
+      <h1 class="bio-name">Oana<br><em>Ruxanda</em></h1>
+
+      <div class="bio-text">
+        <p>I am an emerging photographer, born in 1989, based in Bucharest, working mostly with analogue processes. A flâneur at heart, I often carry my camera with me, drawn to moments that frequently pass unnoticed and sometimes hold a quiet story I have lived myself.</p>
+        <p>My practice moves between observations of everyday life — including incidental, sometimes humorous encounters with people — and contemplative studies of remote landscapes. I am interested in how individuals and environments shape one another, as well as in transience and material memory. Natural light, colour, texture, and weather play a central role in shaping the atmosphere of my images.</p>
+        <p>In recent works, I have expanded my practice into mixed media, incorporating materials collected from the places I photograph and blurring the boundary between image and physical presence.</p>
+        <p>This website is an evolving space. New works will be added gradually, stay tuned.</p>
+      </div>
+
+      <!-- Social Links -->
+      <div class="social-links">
+        <a href="#" class="social-link" target="_blank" rel="noopener">
+          <span class="social-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </span>
+          Instagram
+        </a>
+        <a href="mailto:hello@oanaruxanda.com" class="social-link">
+          <span class="social-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v12H4z"/><path d="M4 4l8 8 8-8"/></svg>
+          </span>
+          Email
+        </a>
+        <a href="#" class="social-link" target="_blank" rel="noopener">
+          <span class="social-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </span>
+          LinkedIn
+        </a>
+        <a href="#" class="social-link" target="_blank" rel="noopener">
+          <span class="social-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </span>
+          Facebook
+        </a>
+      </div>
+
+      <div class="contact-divider"></div>
+
+      <p class="form-label-top">Collaborations &amp; Commissions</p>
+
+      <!-- Contact Form -->
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="f-name">Name</label>
+            <input type="text" id="f-name" name="name" placeholder="Your name" required>
+          </div>
+          <div class="form-field">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" name="email" placeholder="your@email.com" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field" style="grid-column: span 2; border-right: none;">
+            <label for="f-type">Project Type</label>
+            <select id="f-type" name="type">
+              <option value="">Select a category</option>
+              <option value="editorial">Editorial</option>
+              <option value="fashion">Fashion Campaign</option>
+              <option value="portrait">Portrait Session</option>
+              <option value="exhibition">Exhibition / Gallery</option>
+              <option value="brand">Brand Collaboration</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field" style="border-right: none;">
+          <label for="f-message">Message</label>
+          <textarea id="f-message" name="message" placeholder="Tell me about your project…" required></textarea>
+        </div>
+        <div class="form-submit">
+          <button type="submit" class="btn-submit">Send Message</button>
+        </div>
+      </form>
+
+      <div class="form-success" id="form-success">
+        <div class="form-success-icon">✓</div>
+        <p>Thank you for reaching out.<br>I'll be in touch within a few days.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Info Strip -->
+  <div class="info-strip">
+    <div class="info-item reveal">
+      <div class="info-item-label">Based in</div>
+      <div class="info-item-value">Bucharest,<br>Romania</div>
+    </div>
+    <div class="info-item reveal reveal-delay-2">
+      <div class="info-item-label">Available for</div>
+      <div class="info-item-value">Worldwide<br>commissions</div>
+    </div>
+    <div class="info-item reveal reveal-delay-4">
+      <div class="info-item-label">Contact</div>
+      <div class="info-item-value">
+        <a href="mailto:hello@oanaruxanda.com">hello@oanaruxanda.com</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer reveal" style="background:var(--charcoal); color: rgba(250,250,248,0.35); border-top-color: rgba(250,250,248,0.08);">
+    <div class="footer-logo" style="filter: invert(1) brightness(2);">
+      <img src="uploads/logo-oana.png" alt="Oana Ruxanda">
+    </div>
+    <span>© 2024 Oana Ruxanda</span>
+    <span>All rights reserved</span>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    const form = document.getElementById('contact-form');
+    const success = document.getElementById('form-success');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = form.querySelector('#f-name').value.trim();
+      const email = form.querySelector('#f-email').value.trim();
+      const message = form.querySelector('#f-message').value.trim();
+      if (!name || !email || !message) return;
+
+      form.style.opacity = '0';
+      form.style.transition = 'opacity 0.4s';
+      setTimeout(() => {
+        form.style.display = 'none';
+        success.classList.add('visible');
+      }, 400);
+    });
+  </script>
+</body>
+</html>
